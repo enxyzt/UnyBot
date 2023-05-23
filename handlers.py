@@ -1,10 +1,32 @@
-from schedule import get_current_subject, get_next_subject, get_today_schedule, get_tomorrow_schedule, get_week_schedule
+from schedule import get_current_subject, get_next_subject, get_today_schedule, get_tomorrow_schedule, get_week_schedule, save_chat_id, get_all_chat_ids
 import telegram
 import config
-bot = telegram.Bot(token=config.bot_token)
+from apscheduler.schedulers.background import BackgroundScheduler
 
+
+bot = telegram.Bot(token=config.bot_token)
+scheduler = BackgroundScheduler()
+# Установка часового пояса, например, 'Europe/Moscow'
+scheduler.configure(timezone='Europe/Chisinau')
+
+def send_daily_schedule():
+    chat_ids = get_all_chat_ids()  # Получить все сохраненные chat_id из базы данных или файла
+
+    for chat_id in chat_ids:
+        schedule = get_today_schedule()
+        bot.send_message(chat_id=chat_id, text=schedule)
+
+
+# Запланировать выполнение функции send_daily_schedule каждый день в 7 утра
+scheduler.add_job(send_daily_schedule, 'cron', hour=7, minute=30)
+
+# Запустить планировщик
+scheduler.start()
 
 def start(update, context):
+    chat_id = update.message.chat_id
+    username = update.effective_chat.username
+    save_chat_id(chat_id, username)
     reply_markup = {
         'keyboard': [['/now', '/next'], ['/today', '/tomorrow'], ['/week']],
         'one_time_keyboard': False,

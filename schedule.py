@@ -3,11 +3,39 @@ import datetime
 import utils
 import config
 
+
 connection = pyodbc.connect('DRIVER={SQL Server Native Client 11.0};'
                             f'SERVER={config.db_server};'
                             f'DATABASE={config.db_name};'
                             'TRUSTED_CONNECTION=yes;'
                             'ODBCConnectionPooling=True')
+
+
+def save_chat_id(chat_id, username):
+    cursor = connection.cursor()
+
+    # Проверка существования таблицы
+    cursor.execute("SELECT COUNT(*) FROM sys.tables WHERE name = 'chat_ids'")
+    table_exists = cursor.fetchone()[0]
+
+    # Создание таблицы chat_ids, если она не существует
+    if not table_exists:
+        cursor.execute("CREATE TABLE chat_ids (id INT PRIMARY KEY, username VARCHAR(255))")
+
+    # Вставка данных chat_id и username в таблицу
+    cursor.execute("INSERT INTO chat_ids (id, username) VALUES (?, ?)", (chat_id, username))
+
+    # Подтверждение изменений в базе данных
+    connection.commit()
+
+
+def get_all_chat_ids():
+    cursor = connection.cursor()
+    cursor.execute("SELECT id FROM chat_ids")
+    rows = cursor.fetchall()
+    chat_ids = [row[0] for row in rows]
+    return chat_ids
+
 
 # Function for getting the current subject
 def get_current_subject():

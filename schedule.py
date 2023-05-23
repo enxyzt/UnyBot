@@ -22,10 +22,19 @@ def save_chat_id(chat_id, username):
     if not table_exists:
         cursor.execute("CREATE TABLE chat_ids (id INT PRIMARY KEY, username VARCHAR(255))")
 
-    # Вставка данных chat_id и username в таблицу
-    cursor.execute("INSERT INTO chat_ids (id, username) VALUES (?, ?)", (chat_id, username))
+    # Verifică dacă chat_id există deja în tabela chat_ids
+    cursor.execute("SELECT id FROM chat_ids WHERE id = ?", (chat_id,))
+    existing_row = cursor.fetchone()
 
-    # Подтверждение изменений в базе данных
+    if existing_row is not None:
+        # Dacă chat_id există deja, poți decide cum să gestionezi situația
+        # de exemplu, poți actualiza username-ul asociat cu chat_id-ul existent
+        cursor.execute("UPDATE chat_ids SET username = ? WHERE id = ?", (username, chat_id))
+    else:
+        # Dacă chat_id nu există, efectuează inserarea în tabel
+        cursor.execute("INSERT INTO chat_ids (id, username) VALUES (?, ?)", (chat_id, username))
+
+    # Confirmă modificările în baza de date
     connection.commit()
 
 

@@ -1,11 +1,11 @@
 import pyodbc
 import datetime
 import utils
-
+import config
 
 connection = pyodbc.connect('DRIVER={SQL Server Native Client 11.0};'
-                            'SERVER=ENXYZT;'
-                            'DATABASE=master;'
+                            f'SERVER={config.db_server};'
+                            f'DATABASE={config.db_name};'
                             'TRUSTED_CONNECTION=yes;'
                             'ODBCConnectionPooling=True')
 

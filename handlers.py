@@ -1,7 +1,7 @@
 from schedule import get_current_subject, get_next_subject, get_today_schedule, get_tomorrow_schedule, get_week_schedule
 import telegram
-
-bot = telegram.Bot(token='6049300937:AAGnDwH5rLyr4NhQxisF9goiYpH0b-sTFlA')
+import config
+bot = telegram.Bot(token=config.bot_token)
 
 
 def start(update, context):

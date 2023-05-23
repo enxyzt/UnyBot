@@ -1,6 +1,7 @@
 from schedule import get_current_subject, get_next_subject, get_today_schedule, get_tomorrow_schedule, get_week_schedule, save_chat_id, get_all_chat_ids
 import telegram
 import config
+from utils import get_weather
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -13,7 +14,9 @@ def send_daily_schedule():
     chat_ids = get_all_chat_ids()  # Получить все сохраненные chat_id из базы данных или файла
 
     for chat_id in chat_ids:
+        weather_info = get_weather(config.api_key, config.city_name)
         schedule = get_today_schedule()
+        bot.send_message(chat_id=chat_id, text=weather_info)
         bot.send_message(chat_id=chat_id, text=schedule)
 
 

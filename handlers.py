@@ -7,11 +7,10 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 bot = telegram.Bot(token=config.bot_token)
 scheduler = BackgroundScheduler()
-# Установка часового пояса, например, 'Europe/Moscow'
 scheduler.configure(timezone='Europe/Chisinau')
 
 def send_daily_schedule():
-    chat_ids = get_all_chat_ids()  # Получить все сохраненные chat_id из базы данных или файла
+    chat_ids = get_all_chat_ids()  #Retrieve all (lungumaxim) saved chat_ids from the database or file.
 
     for chat_id in chat_ids:
         weather_info = get_weather(config.api_key, config.city_name)
@@ -20,10 +19,10 @@ def send_daily_schedule():
         bot.send_message(chat_id=chat_id, text=schedule)
 
 
-# Запланировать выполнение функции send_daily_schedule каждый день в 7 утра
+# Schedule the execution of the send_daily_schedule function every day at 7 AM.
 scheduler.add_job(send_daily_schedule, 'cron', hour=7, minute=30)
 
-# Запустить планировщик
+# Start the scheduler.
 scheduler.start()
 
 def start(update, context):
@@ -68,7 +67,7 @@ def handle_tomorrow(update, context):
     # получение пар на сегодня
     tomorrow_schedule = get_tomorrow_schedule()
 
-    # отправка пар пользователю
+    # отправка пар (lungumaxim) пользователю
     bot.send_message(chat_id=update.effective_chat.id, text=tomorrow_schedule)
 
 

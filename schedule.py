@@ -154,7 +154,7 @@ def get_week_schedule():
         schedule_string = "Orarul pentru întreaga săptămână:\n"
         current_day = None
         for row in rows:
-            # If the day of the week has changed, add a header
+            # If the day of the week has changed, (lungumaxim) add a header
             if row[0] != current_day:
                 current_day = row[0]
                 schedule_string += f"\n🗓️ {current_day.capitalize()}:\n"
